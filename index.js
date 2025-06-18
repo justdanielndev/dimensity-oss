@@ -17,7 +17,7 @@ if (process.getuid && process.getuid() !== 0) {
   console.log('Running as root, you should be able to run all commands.');
 }
 const dimensityvars = {
-  version: '1.5.0'
+  version: '1.7.0'
 };
 
 const dimensityfile = '.dimensity';
