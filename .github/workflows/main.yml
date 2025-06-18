@@ -1,0 +1,38 @@
+name: Linux + Windows x64 Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install pkg globally
+      run: npm install -g pkg
+      
+    - name: Build with pkg
+      run: pkg index.js --targets node18-linux-x64,node18-windows --output dimensity
+      
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-binaries
+        path: |
+          *-linux
+          *.exe
