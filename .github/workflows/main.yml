@@ -1,13 +1,12 @@
-name: Linux + Windows x64 Build
+name: Build and Release
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*'
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
     
     steps:
@@ -18,7 +17,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
         
     - name: Install dependencies
       run: npm ci
@@ -27,12 +25,19 @@ jobs:
       run: npm install -g pkg
       
     - name: Build with pkg
-      run: pkg index.js --targets node18-linux-x64,node18-windows --output dimensity
+      run: pkg . --targets node18-linux-x64,node18-win-x64
       
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+    - name: Rename binaries for release
+      run: |
+        mv *-linux dimensity-linux-x64
+        mv *.exe dimensity-windows-x64.exe
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
       with:
-        name: compiled-binaries
-        path: |
-          *-linux
-          *.exe
+        files: |
+          dimensity-linux-x64
+          dimensity-windows-x64.exe
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
