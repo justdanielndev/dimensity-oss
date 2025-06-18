@@ -1,0 +1,12 @@
+{
+  "name": "dimensity-oss",
+  "version": "1.0.0",
+  "description": "A CLI-over-CLI shell that makes your terminal usage \"adventure\" better with smart autocompletion (with commands too!), command history, error descriptions and handling...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
