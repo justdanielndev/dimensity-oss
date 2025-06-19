@@ -46,6 +46,30 @@ if (!fs.existsSync(dimensityfile)) {
       { "command": "rm", "subcommands": [], "structure": { "": { "options": ["-r", "-f"], "accepts_files": true } } }
     ]
   }, null, 2));
+  dimensitycontent = {
+    history: [],
+    onboarding: false,
+    color: "36m",
+    username: "user",
+    aliases: {},
+    "autocomplete-suggestions": [
+      { "command": "dimensity", "subcommands": ["help", "exit", "clear", "history", "settings"], "structure": { "help": { "options": [], "accepts_files": false }, "exit": { "options": [], "accepts_files": false }, "clear": { "options": [], "accepts_files": false }, "history": { "options": ["clear"], "accepts_files": false }, "settings": { "options": ["edit"], "accepts_files": false } } },
+      { "command": "git", "subcommands": ["add", "commit", "push", "pull", "status", "log", "diff", "branch", "checkout", "merge", "clone"], "structure": { "add": { "options": ["-A", "--all"], "accepts_files": true }, "commit": { "options": ["-m", "--message"], "accepts_files": false }, "push": { "options": ["-u", "--set-upstream"], "accepts_files": false }, "pull": { "options": ["--rebase"], "accepts_files": false }, "status": { "options": ["-s", "--short"], "accepts_files": false }, "log": { "options": ["--oneline"], "accepts_files": true }, "diff": { "options": ["--cached"], "accepts_files": true }, "branch": { "options": ["-a", "--all"], "accepts_files": false }, "checkout": { "options": ["-b"], "accepts_files": true }, "merge": { "options": ["--no-ff"], "accepts_files": false }, "clone": { "options": [], "accepts_files": false } } },
+      { "command": "npm", "subcommands": ["install", "run", "start", "test", "build"], "structure": { "install": { "options": ["-g", "--global"], "accepts_files": false }, "run": { "options": [], "accepts_files": false }, "start": { "options": [], "accepts_files": false }, "test": { "options": [], "accepts_files": false }, "build": { "options": [], "accepts_files": false } } },
+      { "command": "ls", "subcommands": [], "structure": { "": { "options": ["-l", "-a"], "accepts_files": true } } },
+      { "command": "cd", "subcommands": [], "structure": { "": { "options": [], "accepts_files": true } } },
+      { "command": "mkdir", "subcommands": [], "structure": { "": { "options": ["-p"], "accepts_files": true } } },
+      { "command": "touch", "subcommands": [], "structure": { "": { "options": [], "accepts_files": true } } },
+      { "command": "cat", "subcommands": [], "structure": { "": { "options": ["-n"], "accepts_files": true } } },
+      { "command": "grep", "subcommands": [], "structure": { "": { "options": ["-r", "-i"], "accepts_files": true } } },
+      { "command": "find", "subcommands": [], "structure": { "": { "options": ["-name"], "accepts_files": true } } },
+      { "command": "chmod", "subcommands": [], "structure": { "": { "options": ["-R"], "accepts_files": true } } },
+      { "command": "cp", "subcommands": [], "structure": { "": { "options": ["-r"], "accepts_files": true } } },
+      { "command": "mv", "subcommands": [], "structure": { "": { "options": [], "accepts_files": true } } },
+      { "command": "rm", "subcommands": [], "structure": { "": { "options": ["-r", "-f"], "accepts_files": true } } }
+    ]
+  };
+
   console.log(`Created ${dimensityfile} file.`);
 } else {
   console.log(`Found ${dimensityfile} file.`);
@@ -116,7 +140,9 @@ class ScreenApp {
     
     this.setupEventHandlers();
     this.setupKeypressHandler();
-    this.updateAutocompleteSuggestions();
+    setTimeout(() => {
+      this.updateAutocompleteSuggestions();
+    }, 1000);
   }
 
   findClosestMatch(input) {
