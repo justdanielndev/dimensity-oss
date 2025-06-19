@@ -73,7 +73,6 @@ if (!fs.existsSync(dimensityfile)) {
       { "command": "rm", "subcommands": [], "structure": { "": { "options": ["-r", "-f"], "accepts_files": true } } }
     ]
   };
-
   console.log(`\x1b[37mCreated ${dimensityfile} file.\x1b[0m`);
 } else {
   console.log(`\x1b[37mFound ${dimensityfile} file.\x1b[0m`);
