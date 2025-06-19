@@ -12,12 +12,16 @@ if (process.stdin.isTTY) {
 }
 
 if (process.getuid && process.getuid() !== 0) {
-  console.log('You\'re not running as root, you may not be able to run some commands.');
+  console.log('');
+  console.log('\x1b[37mYou\'re not running as root, you may not be able to run some commands.\x1b[0m');
+  console.log('');
 } else {
-  console.log('Running as root, you should be able to run all commands.');
+  console.log('');
+  console.log('\x1b[33mRunning as root, you should be able to run all commands, but be careful with what you run.\x1b[0m');
+  console.log('');
 }
 const dimensityvars = {
-  version: '1.7.3'
+  version: '1.9.0',
 };
 
 const dimensityfile = '.dimensity';
@@ -70,9 +74,9 @@ if (!fs.existsSync(dimensityfile)) {
     ]
   };
 
-  console.log(`Created ${dimensityfile} file.`);
+  console.log(`\x1b[37mCreated ${dimensityfile} file.\x1b[0m`);
 } else {
-  console.log(`Found ${dimensityfile} file.`);
+  console.log(`\x1b[37mFound ${dimensityfile} file.\x1b[0m`);
   dimensitycontent = fs.readFileSync(dimensityfile, 'utf8').trim();
   try {
     const parsedContent = JSON.parse(dimensitycontent);
@@ -97,7 +101,7 @@ if (!fs.existsSync(dimensityfile)) {
     fs.writeFileSync(dimensityfile, JSON.stringify(parsedContent, null, 2));
     dimensitycontent = parsedContent;
   } catch (e) {
-    console.log(`Error parsing ${dimensityfile}: ${e.message}`);
+    console.log(`\x1b[31mError parsing ${dimensityfile}! Here's the error I got: ${e.message}\x1b[0m`);
     dimensitycontent = { 
       history: [], 
       "autocomplete-suggestions": [
@@ -513,7 +517,7 @@ class ScreenApp {
     if (this.aliases[command]) {
       const aliasCommand = this.aliases[command];
       const expandedCommand = `${aliasCommand} ${args.join(' ')}`.trim();
-      console.log(`\x1b[90m→ ${expandedCommand}\x1b[0m`);
+      console.log(`\x1b[37m(running ${expandedCommand})\x1b[0m`);
       this.processCommand(expandedCommand);
       return;
     } else if (this.commands[command]) {
@@ -568,12 +572,15 @@ class ScreenApp {
   // dimensity command stuff
   dimensity(command) {
     if (command[0] === 'help') {
+      console.log('');
       console.log('Dimensity commands:');
-      console.log(' dimensity help     - Show this help message');
-      console.log(' (dimensity) exit     - Exit the application');
-      console.log(' dimensity clear    - Clear the screen');
-      console.log(' dimensity history  - Show command history');
-      console.log(' dimensity settings (edit) - Show/edit settings');
+      console.log('');
+      console.log(' dimensity help              \x1b[37m- Show this help message\x1b[0m');
+      console.log(' (dimensity) exit            \x1b[37m- Exit the application\x1b[0m');
+      console.log(' (dimensity) clear           \x1b[37m- Clear the screen\x1b[0m');
+      console.log(' dimensity history           \x1b[37m- Show command history\x1b[0m');
+      console.log(' dimensity settings (edit)   \x1b[37m- Show/edit settings\x1b[0m');
+      console.log('');
       this.rl.prompt();
       return;
     } else if (command[0] === 'exit') {
@@ -589,7 +596,7 @@ class ScreenApp {
         dimensitycontent = { history: [] };
         this.history = dimensitycontent.history;
         fs.writeFileSync(dimensityfile, JSON.stringify({ history: [] }, null, 2));
-        console.log('Command history cleared! Changes with the history shown through the arrow keys will take effect when you reopen Dimensity.');
+        console.log('\x1b[36mCommand history cleared!\x1b[0m \x1b[37mChanges with the history shown through the arrow keys will take effect when you reopen Dimensity (limitations of how I implemented it :D).\x1b[0m');
         this.rl.prompt();
         return;
       }
@@ -612,9 +619,9 @@ class ScreenApp {
                   dimensitycontent.username = this.username;
                   fs.writeFileSync(dimensityfile, JSON.stringify(dimensitycontent, null, 2));
                   this.rl.setPrompt(`\x1b[32m${this.username}@dimensity:~$\x1b[0m `);
-                  console.log(`Hello, ${this.username}! Got your new username.`);
+                  console.log(`👋 Hello ${this.username}, nice to meet you again! Got your new username.`);
                 } else {
-                  console.log('Invalid username. Please enter something valid :(');
+                  console.log(`\x1b[31mInvalid username. Please enter something valid :(\x1b[0m`);
                 }
                 this.rl.prompt();
               });
@@ -622,14 +629,14 @@ class ScreenApp {
               this.manageAliases();
             } else if (option === '3') {
               console.log('Which color do you want to use?');
-              console.log(' 1. Default - Teal (36m)');
-              console.log(' 2. Red (31m)');
-              console.log(' 3. Green (32m)');
-              console.log(' 4. Yellow (33m)');
-              console.log(' 5. Blue (34m)');
-              console.log(' 6. Magenta (35m)');
-              console.log(' 7. Cyan (36m)');
-              console.log(' 8. White (37m)');
+              console.log(' 1. \x1b[36mTeal (Dimensity Default)\x1b[0m');
+              console.log(' 2. \x1b[31mRed\x1b[0m');
+              console.log(' 3. \x1b[32mGreen\x1b[0m');
+              console.log(' 4. \x1b[33mYellow\x1b[0m');
+              console.log(' 5. \x1b[34mBlue\x1b[0m');
+              console.log(' 6. \x1b[35mMagenta\x1b[0m');
+              console.log(' 7. \x1b[36mCyan\x1b[0m');
+              console.log(' 8. \x1b[37mWhite\x1b[0m');
               this.rl.question('\x1b[33mChoose a color (1-8): \x1b[0m', (colorOption) => {
                 const colors = {
                   '1': '36m',
@@ -644,39 +651,58 @@ class ScreenApp {
                 if (colors[colorOption]) {
                   dimensitycontent.color = colors[colorOption];
                   fs.writeFileSync(dimensityfile, JSON.stringify(dimensitycontent, null, 2));
-                  console.log(`Dimensity's color has been set to \x1b[${dimensitycontent.color}${colorOption}\x1b[0m!`);
+                  const colorNames = {
+                    '36m': 'Teal',
+                    '31m': 'Red',
+                    '32m': 'Green',
+                    '33m': 'Yellow',
+                    '34m': 'Blue',
+                    '35m': 'Magenta',
+                    '37m': 'White'
+                  };
+                  console.log(`Dimensity's color has been set to \x1b[${dimensitycontent.color}${colorNames[dimensitycontent.color]}\x1b[0m!`);
                 } else {
-                  console.log('Invalid color option.');
+                  console.log(`\x1b[31mInvalid color option.\x1b[0m`);
                 }
                 this.rl.prompt();
               });
             } else if (option === '4') {
               this.rl.prompt();
             } else {
-              console.log('Invalid option! You can only choose 1 to 4.');
+              console.log(`\x1b[31mInvalid option! You can only choose 1 to 4.\x1b[0m`);
               this.rl.prompt();
             }
           });
         } else {
+          const colorNames = {
+            '36m': 'Teal',
+            '31m': 'Red',
+            '32m': 'Green',
+            '33m': 'Yellow',
+            '34m': 'Blue',
+            '35m': 'Magenta',
+            '37m': 'White'
+          };
           console.log('');
           console.log('Current settings:');
           console.log(' Username: ' + dimensitycontent.username);
-          console.log(' Command Aliases: ' + Object.keys(this.aliases).length + ' set (to view/manage, use "dimensity settings edit")');
-          console.log(' Theme Color: \x1b[' + dimensitycontent.color + dimensitycontent.color + '\x1b[0m');
+          console.log(' Command Aliases: ' + Object.keys(this.aliases).length + ' set \x1b[37m(to view/manage, use "dimensity settings edit")\x1b[0m');
+          console.log(' Theme Color: \x1b[' + dimensitycontent.color + colorNames[dimensitycontent.color] + '\x1b[0m');
           console.log('');
-          console.log('Type "dimensity settings edit" to edit any of the settings.');
+          console.log('Type "dimensity settings edit" to edit any of these.');
           this.rl.prompt();
           return;
         }
     } else if (command.length === 0) {
       let message = `║ You're running Dimensity v${dimensityvars.version}!`;
+      let messageauthor = `║ Created by Dan (@justdanielndev)`;
       let message2 = `║ Type "dimensity help" for help.`;
-      if (message.length < message2.length) {
-        message = message.padEnd(message2.length, ' ');
-      } else if (message2.length < message.length) {
-        message2 = message2.padEnd(message.length, ' ');
-      }
+      const length = Math.max(message.length, messageauthor.length, message2.length);
+      message = message.padEnd(length, ' ');
+      messageauthor = messageauthor.padEnd(length, ' ');
+      message2 = message2.padEnd(length, ' ');
       message = message + ' ║';
+      messageauthor = messageauthor + ' ║';
       message2 = message2 + ' ║';
       const borderChar = '═';
       const borderLength = Math.max(message.length, message2.length);
@@ -684,36 +710,39 @@ class ScreenApp {
       let thirdlinecontent = '╚' + borderChar.repeat(borderLength - 2) + '╝';
       console.log(`\x1b[${dimensitycontent.color}` + firstlinecontent + '\x1b[0m');
       console.log(`\x1b[${dimensitycontent.color}` + message + '\x1b[0m');
+      console.log(`\x1b[${dimensitycontent.color}` + messageauthor + '\x1b[0m');
       console.log(`\x1b[${dimensitycontent.color}` + message2 + '\x1b[0m');
       console.log(`\x1b[${dimensitycontent.color}` + thirdlinecontent+ '\x1b[0m');
       this.rl.prompt();
       return;
     } else {
-      console.log(`Unknown command: ${command[0]}... Were you trying to run a non-Dimensity command? Remove the "dimensity" prefix and try again.`);
+      console.log(`\x1b[31m${command[0]}... No idea what that command is. Were you trying to run a non-Dimensity command? Remove the "dimensity" prefix and try again.\x1b[0m`);
       this.rl.prompt();
       return;
     }
   }
 
   manageAliases() {
+    console.clear();
     console.log('');
-    console.log('Command Aliases Management:');
+    console.log('\x1b[' + dimensitycontent.color+ 'Command Aliases' + '\x1b[0m');
+    console.log('');
     
     const aliasKeys = Object.keys(this.aliases);
     if (aliasKeys.length > 0) {
       console.log('Your current aliases:');
       aliasKeys.forEach((alias, index) => {
-        console.log(`  ${alias} → ${this.aliases[alias]}`);
+        console.log(`  ${alias} (${this.aliases[alias]})`);
       });
       console.log('');
     } else {
-      console.log('No aliases defined yet!');
+      console.log('No aliases created yet!');
       console.log('');
     }
     
     console.log(' 1. Add new alias');
     console.log(' 2. Remove alias');
-    console.log(' 3. Leave alias management');
+    console.log(' 3. Leave menu & settings');
     console.log('');
     
     this.rl.question('\x1b[33mChoose an option (1 to 3): \x1b[0m', (option) => {
@@ -725,21 +754,21 @@ class ScreenApp {
                 this.aliases[aliasName.trim()] = originalCommand.trim();
                 dimensitycontent.aliases = this.aliases;
                 fs.writeFileSync(dimensityfile, JSON.stringify(dimensitycontent, null, 2));
-                console.log(`\x1b[32mAlias '${aliasName.trim()}' → '${originalCommand.trim()}' created successfully!\x1b[0m`);
+                console.log(`\x1b[32mAlias ${aliasName.trim()} (${originalCommand.trim()}) created successfully!\x1b[0m`);
                 this.updateAutocompleteSuggestions();
               } else {
-                console.log('Invalid command! Please enter a valid command.');
+                console.log(`\x1b[31mInvalid command! Please enter a valid command.\x1b[0m`);
               }
               this.rl.prompt();
             });
           } else {
-            console.log('Invalid alias name (alias names cannot contain spaces)! Please enter a valid alias name.');
+            console.log(`\x1b[31mInvalid alias name (alias names cannot contain spaces)! Please enter a valid alias name.\x1b[0m`);
             this.rl.prompt();
           }
         });
       } else if (option === '2') {
         if (aliasKeys.length === 0) {
-          console.log('No aliases to remove... Please add some first!');
+          console.log(`\x1b[31mNo aliases to remove... Please add some first!\x1b[0m`);
           this.rl.prompt();
           return;
         }
@@ -752,14 +781,14 @@ class ScreenApp {
             console.log(`\x1b[32mAlias '${aliasToRemove.trim()}' (${removedCommand}) removed successfully!\x1b[0m`);
             this.updateAutocompleteSuggestions();
           } else {
-            console.log('We couldn\'t find that alias! Please enter a valid alias.');
+            console.log(`\x1b[31mWe couldn't find that alias! Please enter a valid alias.\x1b[0m`);
           }
           this.rl.prompt();
         });
       } else if (option === '3') {
         this.rl.prompt();
       } else {
-        console.log('Invalid option! Please choose 1, 2, or 3.');
+        console.log(`\x1b[31mInvalid option! Please choose 1, 2, or 3.\x1b[0m`);
         this.rl.prompt();
       }
     });
