@@ -43,7 +43,7 @@ jobs:
         mv dimensity-linux dimensity-linux-x64
         mv dimensity-win.exe dimensity-windows-x64.exe
         
-    - name: Sign and rename macOS binary
+    - name: Sign and rename binary for macOS
       if: matrix.os == 'macos-latest'
       run: |
         codesign --sign - --force --deep dimensity
