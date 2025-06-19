@@ -527,6 +527,15 @@ class ScreenApp {
   }
 
   executeSystemCommand(command) {
+    if (command.trim() === 'sudo -s' || command.trim().startsWith('sudo -s ')) {
+      console.log('\x1b[31mDimensity does not support sudo -s yet. Use regular sudo commands instead or run dimensity as root.\x1b[0m');
+      this.rl.prompt();
+      return;
+    }
+    if (process.stdin.isTTY && process.stdin.isRaw) {
+      process.stdin.setRawMode(false);
+    }
+
     const child = spawn('sh', ['-c', command], {
       stdio: 'inherit'
     });
@@ -536,6 +545,10 @@ class ScreenApp {
     child.on('close', (code) => {
       this.currentChild = null;
       this.sigintCount = 0;
+      
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(true);
+      }
       
       if (code !== 0) {
         if (code != 127) {
@@ -563,6 +576,9 @@ class ScreenApp {
     child.on('error', (err) => {
       this.currentChild = null;
       this.sigintCount = 0;
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(true);
+      }
       console.log(`Error: ${err.message}`);
       this.rl.prompt();
     });
