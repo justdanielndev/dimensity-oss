@@ -20,7 +20,7 @@ Dimensity currently has (or is going to implement) the following features:
 
 ## Installation
 
-To install Dimensity, simply go to the GitHub releases page and download and run the latest release. Then, run ˋchmod +x dimensityˋ to make it executable.
+To install Dimensity, simply go to the GitHub releases page and download and run the latest release. Then, run ˋchmod +x dimensity-[arch]ˋ to make it executable.
 
 ### On MacOS
 
