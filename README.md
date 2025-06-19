@@ -20,7 +20,7 @@ Dimensity currently has (or is going to implement) the following features:
 
 ## Installation
 
-To install Dimensity, simply go to the GitHub releases page and download and run the latest release. Then, run ˋchmod +x dimensity-[arch]ˋ to make it executable.
+To install Dimensity, simply go to the GitHub releases page and download and run the latest release. Then, run `chmod +x dimensity-[arch]` to make it executable.
 
 ### On MacOS
 
@@ -30,7 +30,7 @@ To do that, go to System Preferences > Privacy & Security, scroll down to Securi
 
 ## Usage
 
-To use Dimensity, run the ˋ./dimensityˋ file in your terminal (feel free to install it globally as well). If you run it with root, it'll allow you to run commands with root privileges (use with caution!).
+To use Dimensity, run the `./dimensity` file in your terminal (feel free to install it globally as well). If you run it with root, it'll allow you to run commands with root privileges (use with caution!).
 
 ## Known Issues
 
