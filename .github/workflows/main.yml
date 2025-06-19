@@ -46,9 +46,9 @@ jobs:
     - name: Sign and rename macOS binary
       if: matrix.os == 'macos-latest'
       run: |
-        codesign --sign - --force --deep dimensity-macos
-        mv dimensity-macos dimensity-macos-arm64
-        
+        codesign --sign - --force --deep dimensity
+        mv dimensity dimensity-macos-arm64
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
