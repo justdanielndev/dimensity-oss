@@ -35,4 +35,4 @@ To use Dimensity, run the `./dimensity` file in your terminal (feel free to inst
 ## Known Issues
 
 1. Running commands which ask for user input will not work and might crash Dimensity. IE, interactive commands will not work.
-2. The `sudo -s` command does not work, as Dimensity dislikes replacing itself with a new shell.
+2. The `sudo -s` command does not work (fix unplanned as it defeats the purpose of Dimensity by replacing it).
